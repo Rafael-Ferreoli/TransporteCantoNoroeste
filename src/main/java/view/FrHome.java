@@ -4,6 +4,8 @@
  */
 package view;
 
+import java.util.List;
+import java.util.ArrayList;
 import javax.swing.JComboBox;
 import javax.swing.JOptionPane;
 
@@ -17,6 +19,7 @@ public class FrHome extends javax.swing.JFrame {
     private int numeroSelecionadoOfertas;
     private int[] oferta;
     private int[] demanda;
+    private int[][] matrizCustos;
 
     /**
      * Creates new form FrHome
@@ -26,6 +29,7 @@ public class FrHome extends javax.swing.JFrame {
         btnDemandas.setEnabled(false);
         btnValoresOfertas.setEnabled(false);
         btnValoresDemandas.setEnabled(false);
+        btnPreencherCustos.setEnabled(false);
     }
 
     /**
@@ -54,6 +58,7 @@ public class FrHome extends javax.swing.JFrame {
         jSeparator2 = new javax.swing.JSeparator();
         jScrollPane2 = new javax.swing.JScrollPane();
         jTextAreaResultados = new javax.swing.JTextArea();
+        btnPreencherCustos = new javax.swing.JButton();
 
         jList1.setModel(new javax.swing.AbstractListModel<String>() {
             String[] strings = { "Item 1", "Item 2", "Item 3", "Item 4", "Item 5" };
@@ -133,11 +138,19 @@ public class FrHome extends javax.swing.JFrame {
         jTextAreaResultados.setRows(5);
         jScrollPane2.setViewportView(jTextAreaResultados);
 
+        btnPreencherCustos.setText("PREENCHER CUSTOS");
+        btnPreencherCustos.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnPreencherCustosActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addComponent(jSeparator1)
+            .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, 415, Short.MAX_VALUE)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -160,10 +173,13 @@ public class FrHome extends javax.swing.JFrame {
                         .addGap(10, 10, 10))
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 0, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(0, 0, 0)
+                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                         .addComponent(jScrollPane2)
+                        .addContainerGap())
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                        .addComponent(btnPreencherCustos, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addContainerGap())))
-            .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, 412, Short.MAX_VALUE)
             .addComponent(jSeparator2, javax.swing.GroupLayout.Alignment.TRAILING)
         );
         layout.setVerticalGroup(
@@ -185,16 +201,14 @@ public class FrHome extends javax.swing.JFrame {
                     .addComponent(btnValoresDemandas)
                     .addComponent(labelValoresDemandas))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(btnPreencherCustos)
+                .addGap(1, 1, 1)
+                .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 0, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jSeparator2, javax.swing.GroupLayout.PREFERRED_SIZE, 3, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(22, 22, 22)
-                        .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 0, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                    .addGroup(layout.createSequentialGroup()
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 205, Short.MAX_VALUE)
-                        .addContainerGap())))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 301, Short.MAX_VALUE)
+                .addContainerGap())
         );
 
         pack();
@@ -217,6 +231,15 @@ public class FrHome extends javax.swing.JFrame {
             jTextAreaResultados.setText(""); // Limpa o JTextArea
             jTextAreaResultados.append("PROBLEMA BALANCEADO " + somaOfertas + " = " + somaDemandas + "\n\n");
 
+            jTextAreaResultados.append("MATRIZ DE CUSTOS:\n\n");
+            for (int z = 0; z < numeroSelecionadoOfertas; z++) {
+                for (int x = 0; x < numeroSelecionadoDemandas; x++) {
+                    jTextAreaResultados.append(" | " + matrizCustos[z][x]);
+                }
+                jTextAreaResultados.append(" |");
+                jTextAreaResultados.append("\n"); // Pule para a próxima linha após cada linha da matriz
+            }
+            jTextAreaResultados.append("\n");
             // Loop para alocar ofertas às demandas
             while (i < numeroSelecionadoOfertas && j < numeroSelecionadoDemandas) {
                 // Determine a quantidade alocada com base nas ofertas e demandas disponíveis
@@ -230,7 +253,7 @@ public class FrHome extends javax.swing.JFrame {
                 matrizAlocacao[i][j] = quantidadeAlocada;
 
                 // Adicione as informações ao JTextArea
-                String resultado = "ALOCANDO " + quantidadeAlocada + " DA OFERTA, ÍNDICE " + i + " ATÉ A DEMANDA " + j;
+                String resultado = "ALOCANDO " + quantidadeAlocada + " DA OFERTA ÍNDICE " + i + " ATÉ A DEMANDA " + j;
                 jTextAreaResultados.append(resultado + "\n");
 
                 // Verifique se todas as ofertas da posição atual foram alocadas
@@ -244,6 +267,16 @@ public class FrHome extends javax.swing.JFrame {
                 }
             }
 
+            List<Integer> resultadoMultiplicacao = new ArrayList<>(); // Faz a multiplicação de todos custos pela matriz alocada
+            for (int z = 0; z < numeroSelecionadoOfertas; z++) {
+                for (int x = 0; x < numeroSelecionadoDemandas; x++) {
+                    int valorA = matrizAlocacao[z][x];
+                    int valorB = matrizCustos[z][x];
+                    int resultado = valorA * valorB;
+                    resultadoMultiplicacao.add(resultado);
+                }
+            }
+
             // Imprima a matriz de alocação no JTextArea
             jTextAreaResultados.append("\nMATRIZ DE ALOCAÇÃO FINAL:\n\n");
             for (i = 0; i < numeroSelecionadoOfertas; i++) {
@@ -253,8 +286,16 @@ public class FrHome extends javax.swing.JFrame {
                 jTextAreaResultados.append(" |");
                 jTextAreaResultados.append("\n"); // Pule para a próxima linha após cada linha da matriz
             }
+            jTextAreaResultados.append("\n");
+            int somaLista = 0;
+            jTextAreaResultados.append("SOMA DO CUSTO TOTAL: \n\n");
+            for (int resultado : resultadoMultiplicacao) {
+                jTextAreaResultados.append("" + resultado + " + ");
+                somaLista += resultado;
+            }
+            jTextAreaResultados.append(" = " + somaLista);
         } else {
-            jTextAreaResultados.append("O PROBLEMA NÃO ESTÁ BALANCEADO "  + somaOfertas + " != " + somaDemandas);
+            jTextAreaResultados.append("O PROBLEMA NÃO ESTÁ BALANCEADO " + somaOfertas + " != " + somaDemandas);
         }
     }
 
@@ -357,7 +398,7 @@ public class FrHome extends javax.swing.JFrame {
         demanda = new int[numeroSelecionadoDemandas];
 
         for (int i = 0; i < numOfertas; i++) {
-            String numeroOferta = JOptionPane.showInputDialog("DIGITE A OFERTA " + (i + 1) + ":");
+            String numeroOferta = JOptionPane.showInputDialog("DIGITE A DEMANDA " + (i + 1) + ":");
             demanda[i] = Integer.parseInt(numeroOferta);
         }
 
@@ -373,8 +414,19 @@ public class FrHome extends javax.swing.JFrame {
 
         // Defina a string como o texto do JLabel
         labelValoresDemandas.setText(demandaText.toString());
-        executarAlocacao();
+        btnPreencherCustos.setEnabled(true);
     }//GEN-LAST:event_btnValoresDemandasActionPerformed
+
+    private void btnPreencherCustosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnPreencherCustosActionPerformed
+        matrizCustos = new int[numeroSelecionadoOfertas][numeroSelecionadoDemandas];
+        for (int i = 0; i < numeroSelecionadoOfertas; i++) {
+            for (int j = 0; j < numeroSelecionadoDemandas; j++) {
+                String numeroOferta = JOptionPane.showInputDialog("DIGITE O CUSTO: " + i + " , " + j);
+                matrizCustos[i][j] = Integer.parseInt(numeroOferta);
+            }
+        }
+        executarAlocacao();
+    }//GEN-LAST:event_btnPreencherCustosActionPerformed
 
     /**
      * @param args the command line arguments
@@ -383,6 +435,7 @@ public class FrHome extends javax.swing.JFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnDemandas;
     private javax.swing.JButton btnOfertas;
+    private javax.swing.JButton btnPreencherCustos;
     private javax.swing.JButton btnValoresDemandas;
     private javax.swing.JButton btnValoresOfertas;
     private javax.swing.JLabel jLabel1;
