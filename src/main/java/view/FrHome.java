@@ -293,7 +293,26 @@ public class FrHome extends javax.swing.JFrame {
                 jTextAreaResultados.append("" + resultado + " + ");
                 somaLista += resultado;
             }
-            jTextAreaResultados.append(" = " + somaLista);
+            jTextAreaResultados.append(" = " + somaLista + "\n\n");
+            // Adicione o teste de otimalidade
+            boolean otimo = true;
+            for (i = 0; i < numeroSelecionadoOfertas - 1; i++) {
+                for (j = 0; j < numeroSelecionadoDemandas - 1; j++) {
+                    if (matrizCustos[i][j] + matrizCustos[i + 1][j + 1] < matrizCustos[i][j + 1] + matrizCustos[i + 1][j]) {
+                        otimo = false;
+                        break;
+                    }
+                }
+                if (!otimo) {
+                    break;
+                }
+            }
+
+            if (otimo) {
+                jTextAreaResultados.append("A solução é ótima.\n");
+            } else {
+                jTextAreaResultados.append("A solução não é ótima.\n");
+            }
         } else {
             jTextAreaResultados.append("O PROBLEMA NÃO ESTÁ BALANCEADO " + somaOfertas + " != " + somaDemandas);
         }
